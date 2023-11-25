@@ -14,6 +14,7 @@ from fl_config import get_dataloaders, log_results
 from utils.data_handler import get_datasets_classes, get_datasets_full_classes
 from utils.transformations import get_finetune_transformation
 from utils.utils import get_img_transformation, set_seed, get_hyperparameters
+from lightning.pytorch import loggers as pl_loggers
 
 
 def count_classes_and_compute_weights(data_loader):
@@ -56,9 +57,10 @@ class FlowerClientMim(FlowerClient):
         self.set_parameters(parameters, config)
         early_stopping = EarlyStopping(monitor=config["monitor"], patience=config["patience"], verbose=False,
                                        mode=config["mode"])
+        tb_logger = TensorBoardLogger(save_dir=os.path.join("simmim", "tb_log/"), name=self.client_name)
         trainer = pl.Trainer(accelerator='gpu', devices=[0], max_epochs=config["epochs"],
                              callbacks=[early_stopping],
-                             logger=False,
+                             logger=[tb_logger],
                              enable_checkpointing=False,
                              # log_every_n_steps=config["log_n_steps"],
                              )
@@ -77,9 +79,10 @@ class FlowerClientMim(FlowerClient):
         self.set_parameters(parameters, config)
         early_stopping = EarlyStopping(monitor=config["monitor"], patience=config["patience"], verbose=False,
                                        mode=config["mode"])
+        tb_logger = TensorBoardLogger(save_dir=os.path.join("cls", "tb_log/"), name=self.client_name)
         trainer = pl.Trainer(accelerator='gpu', devices=[0], max_epochs=config["epochs"],
                              callbacks=[early_stopping],
-                             logger=False,
+                             logger=[tb_logger],
                              enable_checkpointing=False,
                              )
         trainer.fit(model=self.cls, train_dataloaders=self.cls_train_loader, val_dataloaders=self.cls_val_loader)
