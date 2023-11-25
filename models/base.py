@@ -1,4 +1,4 @@
-import pytorch_lightning as pl
+import lightning.pytorch as pl
 import torch
 from torch import optim
 import torch.nn.functional as F
@@ -56,13 +56,13 @@ class BaseNet(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = None
-        if self.hparams.optimizer == "AdamW":
-            optimizer = optim.AdamW(self.model.parameters(), lr=self.lr, weight_decay=self.weight_decay,
+        if self.optimizer == "AdamW":
+            optimizer = optim.AdamW(self.model.parameters(), lr=self.lr, weight_decay=self.wd,
                                     betas=(self.beta1, self.beta2))
         if self.optimizer == "Adam":
-            optimizer = optim.Adam(self.model.parameters(), lr=self.lr, weight_decay=self.weight_decay)
+            optimizer = optim.Adam(self.model.parameters(), lr=self.lr, weight_decay=self.wd)
         if self.optimizer == "SGD":
-            optimizer = optim.SGD(self.model.parameters(), lr=self.lr, weight_decay=self.weight_decay,
+            optimizer = optim.SGD(self.model.parameters(), lr=self.lr, weight_decay=self.wd,
                                   dampening=self.dampening, momentum=self.momentum)
         scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=self.step_size, gamma=self.gamma)
         return {

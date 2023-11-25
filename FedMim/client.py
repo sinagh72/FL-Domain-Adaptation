@@ -7,11 +7,12 @@ from lightning.pytorch.callbacks import EarlyStopping
 import lightning.pytorch as pl
 from FedMim.fedmim import FedMim
 from FedMim.simmim import SimMimWrapper
+from FedMim.simmim_transformation import SimMIMTransform
 from fl_client import FlowerClient
 import os
 from fl_config import get_dataloaders, log_results
 from utils.data_handler import get_datasets_classes, get_datasets_full_classes
-from utils.transformations import best_augmentation
+from utils.transformations import get_finetune_transformation
 from utils.utils import get_img_transformation, set_seed, get_hyperparameters
 
 
@@ -71,57 +72,41 @@ class FlowerClientMim(FlowerClient):
                     config=config)
 
 
-set_seed(10)
-load_dotenv(dotenv_path="../data/.env")
-DATASET_PATH = os.getenv('DATASET_PATH')
-architecture = "simim"
-batch_size = 2
-client_name = str(os.getenv('CLIENT_NAME'))
-cls_kermany_classes, cls_srinivasan_classes, cls_oct500_classes = get_datasets_classes()
-kermany_classes, srinivasan_classes, oct500_classes = get_datasets_full_classes()
-cid = "0"
-if client_name == "Srinivasan":
-    cid = "1"
-elif client_name == "OCT-500":
-    cid = "2"
-cls_train_loader, cls_val_loader, test_loader, classes = get_dataloaders(cid=cid,
-                                                                         dataset_path=DATASET_PATH,
-                                                                         batch_size=batch_size,
-                                                                         kermany_classes=cls_kermany_classes,
-                                                                         srinivasan_classes=cls_srinivasan_classes,
-                                                                         oct500_classes=cls_oct500_classes,
-                                                                         img_transforms=best_augmentation(),
-                                                                         )
-train_loader, val_loader, _, _ = get_dataloaders(cid=cid,
-                                                 dataset_path=DATASET_PATH,
-                                                 batch_size=batch_size,
-                                                 kermany_classes=kermany_classes,
-                                                 srinivasan_classes=srinivasan_classes,
-                                                 oct500_classes=oct500_classes,
-                                                 img_transforms=best_augmentation(),
-                                                 )
-
-
 def client_fn_Mim(cid: str) -> FlowerClientMim:
     """Creates a FlowerClient instance on demand
     Create a Flower client representing a single organization
     """
     set_seed(10)
+    load_dotenv(dotenv_path="../data/.env")
+    DATASET_PATH = os.getenv('DATASET_PATH')
+    architecture = "simim"
+    batch_size = 32
+    img_size = 128
+    client_name = str(os.getenv('CLIENT_NAME'))
+    cls_kermany_classes, cls_srinivasan_classes, cls_oct500_classes = get_datasets_classes()
+    kermany_classes, srinivasan_classes, oct500_classes = get_datasets_full_classes()
     cls_train_loader, cls_val_loader, test_loader, classes = get_dataloaders(cid=cid,
                                                                              dataset_path=DATASET_PATH,
                                                                              batch_size=batch_size,
                                                                              kermany_classes=cls_kermany_classes,
                                                                              srinivasan_classes=cls_srinivasan_classes,
                                                                              oct500_classes=cls_oct500_classes,
-                                                                             img_transforms=best_augmentation(),
+                                                                             img_transforms=get_finetune_transformation(
+                                                                                 img_size),
                                                                              )
+    simmim_transform = SimMIMTransform(img_size, model_patch_size=4,
+                                       mask_patch_size=32,
+                                       mask_ratio=0.3,
+                                       mean=0.5,
+                                       std=0.5
+                                       )
     train_loader, val_loader, _, _ = get_dataloaders(cid=cid,
                                                      dataset_path=DATASET_PATH,
                                                      batch_size=batch_size,
                                                      kermany_classes=kermany_classes,
                                                      srinivasan_classes=srinivasan_classes,
                                                      oct500_classes=oct500_classes,
-                                                     img_transforms=best_augmentation(),
+                                                     img_transforms=simmim_transform,
                                                      )
 
     simim = SimMimWrapper(lr=5e-4,
@@ -138,8 +123,8 @@ def client_fn_Mim(cid: str) -> FlowerClientMim:
                    lr=param["lr"],
                    beta1=param["beta1"],
                    beta2=param["beta2"],
-                   step_size=len(cls_train_loader) * batch_size // 2, gamma=0.5,
-                   num_classes=len(classes)
+                   step_size=len(cls_train_loader) * batch_size * 5, gamma=0.5,
+                   classes=classes
                    )
     return FlowerClientMim(simim, model, cls_train_loader, cls_val_loader, test_loader, train_loader, val_loader,
                            client_name=client_name, architecture=architecture)

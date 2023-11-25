@@ -86,6 +86,7 @@ def norm_targets(targets, patch_size):
 
     return targets_
 
+
 class SimMim(nn.Module):
     def __init__(self):
         super(SimMim, self).__init__()

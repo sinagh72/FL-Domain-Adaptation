@@ -213,12 +213,17 @@ def best_combination():
     return augs
 
 
-def best_augmentation():
+def get_finetune_transformation(img_size, mean=0.5, std=0.5):
     return T.Compose([
+        T.Resize((img_size, img_size), InterpolationMode.LANCZOS),
         CustomRotation(angles=[0, 90, 180, 270]),
         T.ColorJitter(0.3, 0.3),
         GaussianBlur(kernel_size=int(5), sigma=(0.25, 0.75)),
-        SobelFilter()])
+        SobelFilter(),
+        T.Grayscale(3),
+        T.ToTensor(),
+        T.Normalize((mean,), (std,))
+    ])
 
 
 def get_base_transform(size):

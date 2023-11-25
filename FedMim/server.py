@@ -38,13 +38,12 @@ def fit_config(server_round: int):
     """Return training configuration dict for each round."""
     config = {
         "current_round": server_round,
-        "simim_epochs": 300,
-        "patience": 20,
+        "epochs": 100,
+        "patience": 10,
         "monitor": "val_loss",
         "mode": "min",
-        "share_batch_norm": True,
         "clients": 3,
-        "train_batch_size": 64,
+        "batch_size": 64,
         "log_n_steps": 1,
     }
     return config
@@ -55,10 +54,11 @@ def eval_config(server_round: int):
     config = {
         "batch_size": 1,
         "current_round": server_round,
-        "max_round": 1,
         "clients": 3,
-        "train_batch_size": 64,
-        "cls_epochs": 20,
+        "epochs": 20,
+        "patience": 5,
+        "monitor": "val_auc",
+        "mode": "max",
     }
     return config
 
