@@ -2,7 +2,6 @@ import json
 import os
 from torch.utils.data import DataLoader
 import torch
-from models.simple_vit import ViT
 from utils.data_handler import get_oct500_datasets, get_data_loaders, get_srinivasan_datasets, get_kermany_datasets
 
 
@@ -85,28 +84,6 @@ def log_results(classes, results, client_name, architecture, config, log_suffix=
         f.write('\n')
 
 
-def create_model(config):
-    if config["model_architecture"] == "FedAvg_ViT":
-        model = ViT(classes=config["classes"], lr=config["lr"], weight_decay=config["weight_decay"],
-                    model_config=config["model_config"])
-
-    elif config["model_architecture"] == "FedSR_ViT":
-        model = ViT(classes=config["classes"], lr=config["lr"], weight_decay=config["weight_decay"],
-                    model_config=config["model_config"])
-
-    elif config["model_architecture"] == "FedProx_ViT":
-        model = ViT(classes=config["classes"], lr=config["lr"], weight_decay=config["weight_decay"],
-                    model_config=config["model_config"])
-
-    elif config["model_architecture"] == "FedGain_ViT":
-        model = ViT(classes=config["classes"], lr=config["lr"], weight_decay=config["weight_decay"],
-                    model_config=config["model_config"])
-
-    elif config["model_architecture"] == "FedGain_ViT":
-        model = ViT(classes=config["classes"], lr=config["lr"], weight_decay=config["weight_decay"],
-                    model_config=config["model_config"])
-
-    return model
 
 
 if __name__ == "__main__":
