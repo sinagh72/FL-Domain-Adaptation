@@ -89,12 +89,14 @@ class FlowerClientMim(FlowerClient):
                              )
         trainer.fit(model=self.cls, train_dataloaders=self.cls_train_loader, val_dataloaders=self.cls_val_loader)
         test_results = trainer.test(self.cls, self.test_loader, verbose=True)
+        loss = test_results[0]["test_loss"]
         print("============================")
         log_results(classes=self.cls.classes,
                     results=test_results,
                     client_name=self.client_name,
                     architecture=self.architecture,
                     config=config)
+        return float(loss), len(self.test_loader), test_results[0]
 
 
 def client_fn_Mim(cid: str) -> FlowerClientMim:
