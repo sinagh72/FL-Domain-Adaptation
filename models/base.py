@@ -8,7 +8,7 @@ from torchmetrics.classification.accuracy import MulticlassAccuracy
 
 
 class BaseNet(pl.LightningModule):
-    def __init__(self, num_classes, lr, weight_decay=0, momentum=0, dampening=0, optimizer="SGD", beta1=0.9, beta2=0.999,
+    def __init__(self, classes, lr, wd=0, momentum=0, dampening=0, optimizer="SGD", beta1=0.9, beta2=0.999,
                  step_size=1000, gamma=0.5):
         """
 
@@ -17,26 +17,25 @@ class BaseNet(pl.LightningModule):
         :param weight_decay (float): weight decay of optimizer
         """
         super().__init__()
-        self.save_hyperparameters()
-        task = "binary" if num_classes == 2 else "multiclass"
+        task = "binary" if len(classes) == 2 else "multiclass"
         self.metrics_list = ["accuracy", "precision", "f1", "auc"]
         self.sessions = ["train", "val", "test"]
 
-        self.train_ac = MulticlassAccuracy(task=task, num_classes=num_classes, average=None)
-        self.val_ac = MulticlassAccuracy(task=task, num_classes=num_classes, average=None)
-        self.test_ac = MulticlassAccuracy(task=task, num_classes=num_classes, average=None)
+        self.train_ac = MulticlassAccuracy(task=task, num_classes=len(classes), average=None)
+        self.val_ac = MulticlassAccuracy(task=task, num_classes=len(classes), average=None)
+        self.test_ac = MulticlassAccuracy(task=task, num_classes=len(classes), average=None)
 
-        self.train_p = MulticlassPrecision(task=task, num_classes=num_classes, average=None)
-        self.val_p = MulticlassPrecision(task=task, num_classes=num_classes, average=None)
-        self.test_p = MulticlassPrecision(task=task, num_classes=num_classes, average=None)
+        self.train_p = MulticlassPrecision(task=task, num_classes=len(classes), average=None)
+        self.val_p = MulticlassPrecision(task=task, num_classes=len(classes), average=None)
+        self.test_p = MulticlassPrecision(task=task, num_classes=len(classes), average=None)
 
-        self.train_f1 = F1Score(task=task, num_classes=num_classes)
-        self.val_f1 = F1Score(task=task, num_classes=num_classes)
-        self.test_f1 = F1Score(task=task, num_classes=num_classes)
+        self.train_f1 = F1Score(task=task, num_classes=len(classes))
+        self.val_f1 = F1Score(task=task, num_classes=len(classes))
+        self.test_f1 = F1Score(task=task, num_classes=len(classes))
 
-        self.train_auc = AUROC(task=task, num_classes=num_classes)
-        self.val_auc = AUROC(task=task, num_classes=num_classes)
-        self.test_auc = AUROC(task=task, num_classes=num_classes)
+        self.train_auc = AUROC(task=task, num_classes=len(classes))
+        self.val_auc = AUROC(task=task, num_classes=len(classes))
+        self.test_auc = AUROC(task=task, num_classes=len(classes))
 
         self.metrics = {"train": [self.train_ac, self.train_p, self.train_f1, self.train_auc],
                         "val": [self.val_ac, self.val_p, self.val_f1, self.val_auc],
@@ -44,18 +43,28 @@ class BaseNet(pl.LightningModule):
                         }
         self.step_output = {"train": [], "val": [], "test": []}
         self.mean_log_keys = ["loss"]
+        self.lr = lr
+        self.wd = wd
+        self.momentum = momentum
+        self.dampening = dampening
+        self.optimizer = optimizer
+        self.beta1 = beta1
+        self.beta2 = beta2
+        self.step_size = step_size
+        self.gamma = gamma
+        self.classes = classes
 
     def configure_optimizers(self):
         optimizer = None
         if self.hparams.optimizer == "AdamW":
-            optimizer = optim.AdamW(self.model.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay,
-                                    betas=(self.hparams.beta1, self.hparams.beta2))
-        if self.hparams.optimizer == "Adam":
-            optimizer = optim.Adam(self.model.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay)
-        if self.hparams.optimizer == "SGD":
-            optimizer = optim.SGD(self.model.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay,
-                                  dampening=self.hparams.dampening, momentum=self.hparams.momentum)
-        scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=self.hparams.step_size, gamma=self.hparams.gamma)
+            optimizer = optim.AdamW(self.model.parameters(), lr=self.lr, weight_decay=self.weight_decay,
+                                    betas=(self.beta1, self.beta2))
+        if self.optimizer == "Adam":
+            optimizer = optim.Adam(self.model.parameters(), lr=self.lr, weight_decay=self.weight_decay)
+        if self.optimizer == "SGD":
+            optimizer = optim.SGD(self.model.parameters(), lr=self.lr, weight_decay=self.weight_decay,
+                                  dampening=self.dampening, momentum=self.momentum)
+        scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=self.step_size, gamma=self.gamma)
         return {
             'optimizer': optimizer,
             'lr_scheduler': scheduler,
@@ -68,7 +77,7 @@ class BaseNet(pl.LightningModule):
         imgs, labels = batch["img"], batch["label"]
         preds = self.forward(imgs)
         loss = F.cross_entropy(preds, labels)
-        preds = preds.argmax(dim=-1) if len(self.hparams.classes) == 2 else preds
+        preds = preds.argmax(dim=-1) if len(self.classes) == 2 else preds
         return {"loss": loss, "preds": preds, "labels": labels}
 
     def training_step(self, batch, batch_idx):
@@ -150,8 +159,8 @@ class BaseNet(pl.LightningModule):
             log[session + "_f1"] = res["f1"]
 
         if "precision" in self.metrics_list:
-            for key, idx in self.hparams.classes:
+            for key, idx in self.classes:
                 log[session + "_precision_" + key] = res["precision"][idx]
         if "accuracy" in self.metrics_list:
-            for key, idx in self.hparams.classes:
+            for key, idx in self.classes:
                 log[session + "_accuracy_" + key] = res["accuracy"][idx]
