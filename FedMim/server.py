@@ -43,8 +43,7 @@ def fit_config(server_round: int):
         "monitor": "val_loss",
         "mode": "min",
         "clients": 3,
-        "batch_size": 64,
-        "log_n_steps": 1,
+        "batch_size": 32,
     }
     return config
 
@@ -52,7 +51,7 @@ def fit_config(server_round: int):
 def eval_config(server_round: int):
     """Return evaluation configuration dict for each round."""
     config = {
-        "batch_size": 1,
+        "batch_size": 32,
         "current_round": server_round,
         "clients": 3,
         "epochs": 20,

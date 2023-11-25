@@ -71,19 +71,17 @@ def log_results(classes, results, client_name, architecture, config, log_suffix=
     result["f1_score"] = results[0]["test_f1"]
     result["auc"] = results[0]["test_auc"]
     result["loss"] = results[0]["test_loss"]
-    dir_name = f"log_e{config['max_epochs']}/"
+    dir_name = f"log_e{config['epochs']}/"
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
     arch = architecture.replace(')', '').replace('(', '').replace(',', '').replace("'", "")
-    log_name = f'{dir_name}/{client_name}_{approach}_{arch}_{config["train_batch_size"]}_{log_suffix}.txt'
+    log_name = f'{dir_name}/{client_name}_{approach}_{arch}_{config["batch_size"]}_{log_suffix}.txt'
     file_mode = "a" if os.path.exists(log_name) else "w"
     with open(log_name, file_mode) as f:
         f.write(f"============={config['current_round']}=======================")
         f.write('\n')
         f.write(str(result))
         f.write('\n')
-
-
 
 
 if __name__ == "__main__":

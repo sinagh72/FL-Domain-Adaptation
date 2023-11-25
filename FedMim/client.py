@@ -35,6 +35,7 @@ def count_classes_and_compute_weights(data_loader):
     weights_tensor = torch.tensor([class_weights[0], class_weights[1]], dtype=torch.float32)
     return class_counts, weights_tensor
 
+
 class FlowerClientMim(FlowerClient):
     def __init__(self, net, cls, cls_train_loader, cls_val_loader, test_loader,
                  masked_train_loader, masked_val_loader, client_name, architecture):
@@ -84,7 +85,7 @@ class FlowerClientMim(FlowerClient):
         trainer.fit(model=self.cls, train_dataloaders=self.cls_train_loader, val_dataloaders=self.cls_val_loader)
         test_results = trainer.test(self.cls, self.test_loader, verbose=True)
         print("============================")
-        log_results(classes=self.cls.hparams.classes,
+        log_results(classes=self.cls.classes,
                     results=test_results,
                     client_name=self.client_name,
                     architecture=self.architecture,
@@ -95,13 +96,17 @@ def client_fn_Mim(cid: str) -> FlowerClientMim:
     """Creates a FlowerClient instance on demand
     Create a Flower client representing a single organization
     """
+    client_name = "Kermany"
+    if cid == "1":
+        client_name = "Srinivasan"
+    elif cid == "2":
+        client_name = "OCT500"
     set_seed(10)
     load_dotenv(dotenv_path="../data/.env")
     DATASET_PATH = os.getenv('DATASET_PATH')
     architecture = "simim"
     batch_size = 32
     img_size = 128
-    client_name = str(os.getenv('CLIENT_NAME'))
     cls_kermany_classes, cls_srinivasan_classes, cls_oct500_classes = get_datasets_classes()
     kermany_classes, srinivasan_classes, oct500_classes = get_datasets_full_classes()
     cls_train_loader, cls_val_loader, test_loader, classes = get_dataloaders(cid=cid,
@@ -132,51 +137,56 @@ def client_fn_Mim(cid: str) -> FlowerClientMim:
                           warmup_lr=5e-7,
                           wd=0.05,
                           min_lr=5e-6,
-                          epochs=300,
-                          warmup_epochs=20,
+                          epochs=100,
+                          warmup_epochs=10,
                           )
     param = get_hyperparameters(client_name, "ViT")
-
+    class_counts, weights = count_classes_and_compute_weights(cls_train_loader)
+    print("client: ", client_name, class_counts)
+    step_size = len(cls_train_loader) // batch_size * 5
     model = FedMim(encoder=simim.model.encoder,
                    wd=param["wd"],
                    lr=param["lr"],
                    beta1=param["beta1"],
                    beta2=param["beta2"],
-                   step_size=len(cls_train_loader) * batch_size * 5, gamma=0.5,
-                   classes=classes
+                   step_size=step_size, gamma=0.5,
+                   classes=classes,
+                   class_weights=weights
                    )
     return FlowerClientMim(simim, model, cls_train_loader, cls_val_loader, test_loader, train_loader, val_loader,
                            client_name=client_name, architecture=architecture)
 
-
-if __name__ == "__main__":
-    set_seed(10)
-    server_ip = os.getenv('SERVER_IP')
-    trials = 10
-    param = get_hyperparameters(client_name, "ViT")
-    # Model and data
-    for i in range(0, trials):
-        simim = SimMimWrapper(num_classes=len(classes),
-                              lr=5e-4,
-                              warmup_lr=5e-7,
-                              wd=0.05,
-                              min_lr=5e-6,
-                              epochs=300,
-                              warmup_epochs=20,
-                              )
-
-        model = FedMim(encoder=simim.model.encoder,
-                       wd=param["wd"],
-                       lr=param["lr"],
-                       beta1=param["beta1"],
-                       beta2=param["beta2"],
-                       step_size=len(cls_train_loader * batch_size) // 2, gamma=0.5
-                       )
-
-        client = FlowerClientMim(simim, model, train_loader, val_loader, test_loader,
-                                 client_name=client_name,
-                                 architecture=architecture)
-        fl.client.start_numpy_client(server_address=f"{server_ip}:{os.getenv('SERVER_PORT')}",
-                                     client=client)
-        torch.cuda.empty_cache()
-        sleep(10)
+# if __name__ == "__main__":
+#     set_seed(10)
+#     server_ip = os.getenv('SERVER_IP')
+#     trials = 10
+#
+#     client_name = str(os.getenv('CLIENT_NAME'))
+#     param = get_hyperparameters(client_name, "ViT")
+#
+#     # Model and data
+#     for i in range(0, trials):
+#         simim = SimMimWrapper(num_classes=len(classes),
+#                               lr=5e-4,
+#                               warmup_lr=5e-7,
+#                               wd=0.05,
+#                               min_lr=5e-6,
+#                               epochs=300,
+#                               warmup_epochs=20,
+#                               )
+#
+#         model = FedMim(encoder=simim.model.encoder,
+#                        wd=param["wd"],
+#                        lr=param["lr"],
+#                        beta1=param["beta1"],
+#                        beta2=param["beta2"],
+#                        step_size=len(cls_train_loader * batch_size) // 2, gamma=0.5
+#                        )
+#
+#         client = FlowerClientMim(simim, model, train_loader, val_loader, test_loader,
+#                                  client_name=client_name,
+#                                  architecture=architecture)
+#         fl.client.start_numpy_client(server_address=f"{server_ip}:{os.getenv('SERVER_PORT')}",
+#                                      client=client)
+#         torch.cuda.empty_cache()
+#         sleep(10)
