@@ -8,7 +8,6 @@ from pytorch_lightning.callbacks import EarlyStopping
 from fl_config import log_results, get_dataloaders
 from hyperparameters import get_vit_config
 from models.resnet import ResNet
-from models.simple_vit import ViT
 from utils.data_handler import get_datasets_classes
 from utils.utils import set_seed, get_img_transformation, get_hyperparameters
 
@@ -107,80 +106,6 @@ DATASET_PATH = os.getenv('DATASET_PATH')
 batch_size = 64
 kermany_classes, srinivasan_classes, oct500_classes = get_datasets_classes()
 architecture = "resnet18"
-
-
-def client_fn_ViT(cid: str) -> FlowerClient:
-    """Creates a FlowerClient instance on demand
-    Create a Flower client representing a single organization
-    """
-    set_seed()
-    # Load model
-    train_loader, val_loader, test_loader, classes = get_dataloaders(cid=cid,
-                                                                     dataset_path=DATASET_PATH,
-                                                                     batch_size=batch_size,
-                                                                     kermany_classes=kermany_classes,
-                                                                     srinivasan_classes=srinivasan_classes,
-                                                                     oct500_classes=oct500_classes,
-                                                                     img_transforms=get_img_transformation(),
-                                                                     limit_kermany=False
-                                                                     )
-
-    vit_config = get_vit_config()
-    client_name = "kermany"
-    if cid == "1":
-        client_name = "srinivasan"
-    elif cid == "2":
-        client_name = "oct-500"
-
-    model = ViT(classes=classes, lr=vit_config["lr"],
-                weight_decay=vit_config["weight_decay"],
-                **vit_config["model_config"])
-    # Create a  single Flower client representing a single organization
-    return FlowerClient(net=model,
-                        train_loader=train_loader,
-                        val_loader=val_loader,
-                        test_loader=test_loader,
-                        client_name=client_name, architecture="ViT")
-
-
-def client_fn_ResNet(cid: str) -> FlowerClient:
-    """Creates a FlowerClient instance on demand
-    Create a Flower client representing a single organization
-    """
-    set_seed()
-    # Load model
-    train_loader, val_loader, test_loader, classes = get_dataloaders(cid=cid,
-                                                                     dataset_path=DATASET_PATH,
-                                                                     batch_size=batch_size,
-                                                                     kermany_classes=kermany_classes,
-                                                                     srinivasan_classes=srinivasan_classes,
-                                                                     oct500_classes=oct500_classes,
-                                                                     img_transforms=get_img_transformation(),
-                                                                     limit_kermany=False
-                                                                     )
-
-    resnet_config = get_hyperparameters(model_architecture=architecture, client_name=os.getenv('CLIENT_NAME'))
-
-    client_name = "kermany"
-    if cid == "1":
-        client_name = "srinivasan"
-    elif cid == "2":
-        client_name = "oct-500"
-
-    model = ResNet(classes=classes,
-                   lr=resnet_config["lr"],
-                   weight_decay=resnet_config["wd"],
-                   optimizer="AdamW",
-                   beta1=resnet_config["beta1"],
-                   beta2=resnet_config["beta2"],
-                   architecture=architecture)
-    # Create a  single Flower client representing a single organization
-    return FlowerClient(net=model,
-                        train_loader=train_loader,
-                        val_loader=val_loader,
-                        test_loader=test_loader,
-                        client_name=client_name, architecture=architecture)
-
 
 def main(server_address, model, architecture="resnet18", client_name="Kermany", cid="0") -> None:
     if client_name == "Srinivasan":

@@ -58,18 +58,18 @@ if __name__ == "__main__":
                    lr=param["lr"],
                    beta1=param["beta1"],
                    beta2=param["beta2"],
-                   step_size=len(cls_train_loader) * batch_size // 2, gamma=0.5,
+                   step_size=step_size, gamma=0.5,
                    classes=classes,
                    class_weights=weights
                    )
-    # resent = ResNet(wd=param["wd"],
-    #                 lr=param["lr"],
-    #                 beta1=param["beta1"],
-    #                 beta2=param["beta2"],
-    #                 step_size=len(cls_train_loader) * batch_size // 2, gamma=0.5,
-    #                 classes=classes,
-    #                 architecture="resnet18"
-    #                 )
+    resent = ResNet(wd=param["wd"],
+                    lr=param["lr"],
+                    beta1=param["beta1"],
+                    beta2=param["beta2"],
+                    step_size=step_size, gamma=0.5,
+                    classes=classes,
+                    architecture="resnet18"
+                    )
     early_stopping = EarlyStopping(monitor="val_auc", patience=5, verbose=False,
                                    mode="max")
     trainer = pl.Trainer(accelerator='gpu', devices=[0], max_epochs=10,
@@ -77,4 +77,4 @@ if __name__ == "__main__":
                          enable_checkpointing=False,
                          # log_every_n_steps=config["log_n_steps"],
                          )
-    trainer.fit(model=model, train_dataloaders=cls_train_loader, val_dataloaders=cls_val_loader)
+    trainer.fit(model=resent, train_dataloaders=cls_train_loader, val_dataloaders=cls_val_loader)

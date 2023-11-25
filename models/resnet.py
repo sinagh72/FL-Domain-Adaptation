@@ -10,11 +10,11 @@ class ResNet(BaseNet):
         }
         """
         super().__init__(**kwargs)
-        self.model = torchvision.models.resnet18(num_classes=len(self.hparams.classes))
+        self.model = torchvision.models.resnet18(num_classes=len(self.classes))
         if architecture == "resnet50":
-            self.model = torchvision.models.resnet50(num_classes=len(self.hparams.classes))
+            self.model = torchvision.models.resnet50(num_classes=len(self.classes))
         elif architecture == "resnet101":
-            self.model = torchvision.models.resnet101(num_classes=len(self.hparams.classes))
+            self.model = torchvision.models.resnet101(num_classes=len(self.classes))
         elif architecture == "resnet152":
-            self.model = torchvision.models.resnet152(num_classes=len(self.hparams.classes))
+            self.model = torchvision.models.resnet152(num_classes=len(self.classes))
         self.save_hyperparameters()

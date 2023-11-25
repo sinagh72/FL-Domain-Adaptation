@@ -21,13 +21,13 @@ class BaseNet(pl.LightningModule):
         self.metrics_list = ["accuracy", "precision", "f1", "auc"]
         self.sessions = ["train", "val", "test"]
 
-        self.train_ac = MulticlassAccuracy(task=task, num_classes=len(classes), average=None)
-        self.val_ac = MulticlassAccuracy(task=task, num_classes=len(classes), average=None)
-        self.test_ac = MulticlassAccuracy(task=task, num_classes=len(classes), average=None)
+        self.train_ac = MulticlassAccuracy(num_classes=len(classes), average=None)
+        self.val_ac = MulticlassAccuracy(num_classes=len(classes), average=None)
+        self.test_ac = MulticlassAccuracy(num_classes=len(classes), average=None)
 
-        self.train_p = MulticlassPrecision(task=task, num_classes=len(classes), average=None)
-        self.val_p = MulticlassPrecision(task=task, num_classes=len(classes), average=None)
-        self.test_p = MulticlassPrecision(task=task, num_classes=len(classes), average=None)
+        self.train_p = MulticlassPrecision(num_classes=len(classes), average=None)
+        self.val_p = MulticlassPrecision(num_classes=len(classes), average=None)
+        self.test_p = MulticlassPrecision(num_classes=len(classes), average=None)
 
         self.train_f1 = F1Score(task=task, num_classes=len(classes))
         self.val_f1 = F1Score(task=task, num_classes=len(classes))
