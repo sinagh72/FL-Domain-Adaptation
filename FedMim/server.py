@@ -84,7 +84,7 @@ def simulation_main(net, client_fn) -> None:
         num_clients=NUM_CLIENTS,
         config=fl.server.ServerConfig(num_rounds=10),
         strategy=strategy,
-        client_resources={"num_gpus": 1, "num_cpus": 8},
+        client_resources={"num_gpus": 7, "num_cpus": os.cpu_count() - 4},
     )
 
 
@@ -100,8 +100,8 @@ if __name__ == "__main__":
                               warmup_lr=5e-7,
                               wd=0.05,
                               min_lr=5e-6,
-                              epochs=300,
-                              warmup_epochs=20,
+                              epochs=100,
+                              warmup_epochs=10,
                               )
         # for i in range(1, 11):
         simulation_main(net=simim, client_fn=client_fn_Mim)

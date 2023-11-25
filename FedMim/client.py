@@ -56,7 +56,7 @@ class FlowerClientMim(FlowerClient):
         self.set_parameters(parameters, config)
         early_stopping = EarlyStopping(monitor=config["monitor"], patience=config["patience"], verbose=False,
                                        mode=config["mode"])
-        trainer = pl.Trainer(accelerator='gpu', devices=[0], max_epochs=config["simim_epochs"],
+        trainer = pl.Trainer(accelerator='gpu', devices=[0], max_epochs=config["epochs"],
                              callbacks=[early_stopping],
                              logger=False,
                              enable_checkpointing=False,
@@ -77,7 +77,7 @@ class FlowerClientMim(FlowerClient):
         self.set_parameters(parameters, config)
         early_stopping = EarlyStopping(monitor=config["monitor"], patience=config["patience"], verbose=False,
                                        mode=config["mode"])
-        trainer = pl.Trainer(accelerator='gpu', devices=[0], max_epochs=config["cls_epochs"],
+        trainer = pl.Trainer(accelerator='gpu', devices=[0], max_epochs=config["epochs"],
                              callbacks=[early_stopping],
                              logger=False,
                              enable_checkpointing=False,
