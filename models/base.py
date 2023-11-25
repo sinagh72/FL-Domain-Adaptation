@@ -8,7 +8,7 @@ from torchmetrics.classification.accuracy import MulticlassAccuracy
 
 
 class BaseNet(pl.LightningModule):
-    def __init__(self, classes, lr, wd=0, momentum=0, dampening=0, optimizer="SGD", beta1=0.9, beta2=0.999,
+    def __init__(self, classes, lr, wd=0, momentum=0, dampening=0, optimizer="AdamW", beta1=0.9, beta2=0.999,
                  step_size=1000, gamma=0.5):
         """
 

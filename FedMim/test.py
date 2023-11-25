@@ -1,18 +1,20 @@
 import os
 
+import torch
 from dotenv import load_dotenv
 from lightning.pytorch.callbacks import EarlyStopping
 
+from FedMim.client import count_classes_and_compute_weights
 from FedMim.fedmim import FedMim
 from FedMim.simmim import SimMimWrapper
 from fl_config import get_dataloaders
+from models.resnet import ResNet
 from utils.data_handler import get_datasets_classes, get_datasets_full_classes
 from utils.transformations import get_finetune_transformation
 from utils.utils import set_seed, get_hyperparameters
 from lightning.pytorch.loggers import TensorBoardLogger
 from lightning.pytorch import loggers as pl_loggers
 import lightning.pytorch as pl
-
 
 if __name__ == "__main__":
     max_epochs = 200
@@ -35,8 +37,10 @@ if __name__ == "__main__":
                                                                              img_transforms=get_finetune_transformation(
                                                                                  img_size),
                                                                              )
+
+    class_counts, weights = count_classes_and_compute_weights(cls_train_loader)
     # preparing config
-    step_size = len(cls_train_loader)//batch_size * 5
+    step_size = len(cls_train_loader) // batch_size * 5
     lr = 1e-4
     wd = 1e-6
 
@@ -55,9 +59,17 @@ if __name__ == "__main__":
                    beta1=param["beta1"],
                    beta2=param["beta2"],
                    step_size=len(cls_train_loader) * batch_size // 2, gamma=0.5,
-                   classes=classes
+                   classes=classes,
+                   class_weights=weights
                    )
-
+    # resent = ResNet(wd=param["wd"],
+    #                 lr=param["lr"],
+    #                 beta1=param["beta1"],
+    #                 beta2=param["beta2"],
+    #                 step_size=len(cls_train_loader) * batch_size // 2, gamma=0.5,
+    #                 classes=classes,
+    #                 architecture="resnet18"
+    #                 )
     early_stopping = EarlyStopping(monitor="val_auc", patience=5, verbose=False,
                                    mode="max")
     trainer = pl.Trainer(accelerator='gpu', devices=[0], max_epochs=10,
@@ -66,5 +78,3 @@ if __name__ == "__main__":
                          # log_every_n_steps=config["log_n_steps"],
                          )
     trainer.fit(model=model, train_dataloaders=cls_train_loader, val_dataloaders=cls_val_loader)
-
-

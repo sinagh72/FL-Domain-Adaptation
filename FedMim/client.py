@@ -16,6 +16,25 @@ from utils.transformations import get_finetune_transformation
 from utils.utils import get_img_transformation, set_seed, get_hyperparameters
 
 
+def count_classes_and_compute_weights(data_loader):
+    class_counts = {0: 0, 1: 0}
+
+    for batch in data_loader:
+        labels = batch["label"]  # Adjust this if your label key is different
+        class_counts[0] += torch.sum(labels == 0).item()
+        class_counts[1] += torch.sum(labels == 1).item()
+
+    total_counts = sum(class_counts.values())
+    if total_counts == 0:
+        raise ValueError("No labels found in the data loader.")
+
+    # Calculate weights inversely proportional to class frequencies
+    class_weights = {cls: total_counts / count for cls, count in class_counts.items()}
+
+    # Convert to a tensor
+    weights_tensor = torch.tensor([class_weights[0], class_weights[1]], dtype=torch.float32)
+    return class_counts, weights_tensor
+
 class FlowerClientMim(FlowerClient):
     def __init__(self, net, cls, cls_train_loader, cls_val_loader, test_loader,
                  masked_train_loader, masked_val_loader, client_name, architecture):

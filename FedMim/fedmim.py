@@ -1,5 +1,8 @@
+import torch
+
 from models.base import BaseNet
 import torch.nn as nn
+import torch.nn.functional as F
 
 
 class MLP(nn.Module):
@@ -21,8 +24,16 @@ class MLP(nn.Module):
 
 
 class FedMim(BaseNet):
-    def __init__(self, encoder, **kwargs):
+    def __init__(self, encoder, class_weights, **kwargs):
         super().__init__(**kwargs)
         self.model = nn.Sequential(encoder,
                                    MLP(encoder.head.out_features, len(kwargs["classes"]))
                                    )
+        self.class_weights = class_weights
+
+    def _calculate_loss(self, batch):
+        imgs, labels = batch["img"], batch["label"]
+        preds = self.forward(imgs)
+        loss = F.cross_entropy(preds, labels, weight=self.class_weights.to(self.device))
+        preds = preds.argmax(dim=-1) if len(self.classes) == 2 else preds
+        return {"loss": loss, "preds": preds, "labels": labels}
