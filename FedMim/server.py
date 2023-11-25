@@ -38,7 +38,7 @@ def fit_config(server_round: int):
     """Return training configuration dict for each round."""
     config = {
         "current_round": server_round,
-        "epochs": 100,
+        "epochs": 1,
         "patience": 10,
         "monitor": "val_loss",
         "mode": "min",
@@ -54,7 +54,7 @@ def eval_config(server_round: int):
         "batch_size": 32,
         "current_round": server_round,
         "clients": 3,
-        "epochs": 20,
+        "epochs": 1,
         "patience": 5,
         "monitor": "val_auc",
         "mode": "max",
@@ -84,7 +84,8 @@ def simulation_main(net, client_fn) -> None:
         num_clients=NUM_CLIENTS,
         config=fl.server.ServerConfig(num_rounds=10),
         strategy=strategy,
-        client_resources={"num_gpus": 7, "num_cpus": os.cpu_count() - 4},
+        ray_init_args={"num_gpus": 7, "num_cpus": os.cpu_count() - 4},
+        client_resources={"num_gpus": 7 // NUM_CLIENTS, "num_cpus": (os.cpu_count() - 4)//NUM_CLIENTS},
     )
 
 

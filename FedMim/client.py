@@ -13,8 +13,8 @@ import os
 from fl_config import get_dataloaders, log_results
 from utils.data_handler import get_datasets_classes, get_datasets_full_classes
 from utils.transformations import get_finetune_transformation
-from utils.utils import get_img_transformation, set_seed, get_hyperparameters
-from lightning.pytorch import loggers as pl_loggers
+from utils.utils import set_seed, get_hyperparameters
+from lightning.pytorch.loggers import TensorBoardLogger
 
 
 def count_classes_and_compute_weights(data_loader):
@@ -44,6 +44,7 @@ class FlowerClientMim(FlowerClient):
         self.cls = cls
         self.cls_train_loader = cls_train_loader
         self.cls_val_loader = cls_val_loader
+        self.client_name = client_name
 
     def fit(self, parameters, config):
         """
@@ -57,7 +58,8 @@ class FlowerClientMim(FlowerClient):
         self.set_parameters(parameters, config)
         early_stopping = EarlyStopping(monitor=config["monitor"], patience=config["patience"], verbose=False,
                                        mode=config["mode"])
-        tb_logger = TensorBoardLogger(save_dir=os.path.join("simmim", "tb_log/"), name=self.client_name)
+        self.net.warmup_epoch = config["epochs"] // 10
+        tb_logger = TensorBoardLogger(save_dir=os.path.join(f"simmim_{config['epochs']}", "tb_log/"), name=self.client_name)
         trainer = pl.Trainer(accelerator='gpu', devices=[0], max_epochs=config["epochs"],
                              callbacks=[early_stopping],
                              logger=[tb_logger],
@@ -79,7 +81,7 @@ class FlowerClientMim(FlowerClient):
         self.set_parameters(parameters, config)
         early_stopping = EarlyStopping(monitor=config["monitor"], patience=config["patience"], verbose=False,
                                        mode=config["mode"])
-        tb_logger = TensorBoardLogger(save_dir=os.path.join("cls", "tb_log/"), name=self.client_name)
+        tb_logger = TensorBoardLogger(save_dir=os.path.join(f"cls{config['epochs']}", "tb_log/"), name=self.client_name)
         trainer = pl.Trainer(accelerator='gpu', devices=[0], max_epochs=config["epochs"],
                              callbacks=[early_stopping],
                              logger=[tb_logger],
