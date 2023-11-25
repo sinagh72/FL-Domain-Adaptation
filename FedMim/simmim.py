@@ -164,7 +164,7 @@ class SimMimWrapper(pl.LightningModule):
         loss = self.forward(img, mask)
         self.step_output["train"].append(loss.cpu().item())
         log = {"loss": loss}
-        self.log_dict(log, sync_dist=True, on_step=True, prog_bar=True, logger=True)
+        self.log_dict(log, sync_dist=True, on_step=True, prog_bar=True)
         return loss
 
     def on_train_epoch_end(self):
@@ -175,7 +175,7 @@ class SimMimWrapper(pl.LightningModule):
         loss = self.forward(img, mask)
         self.step_output["val"].append(loss.cpu().item())
         log = {"loss": loss}
-        self.log_dict(log, sync_dist=True, on_step=True, prog_bar=True, logger=True)
+        self.log_dict(log, sync_dist=True, on_step=True, prog_bar=True)
 
     def on_validation_epoch_end(self):
         self.stack_update(session="val")
