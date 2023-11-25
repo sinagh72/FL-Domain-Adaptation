@@ -6,3 +6,7 @@
 /FedSR/ViT/lightning_logs/
 /FedMRI/ViT/lightning_logs/
 /FedProx/ViT/lightning_logs/
+__pychaceh__/
+FedMim/__pycache__/
+models/__pycache__/
+/data/.env

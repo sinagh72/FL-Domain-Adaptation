@@ -160,10 +160,8 @@ class SimMimWrapper(pl.LightningModule):
         return self.model(x, mask)
 
     def training_step(self, batch, batch_idx):
-        # img, lbl = batch
-        img, mask = batch
+        img, mask = batch["img"]
         loss = self.forward(img, mask)
-        print(loss)
         self.step_output["train"].append(loss.cpu().item())
         log = {"loss": loss}
         self.log_dict(log, sync_dist=True, on_step=True, prog_bar=True, logger=True)
@@ -172,14 +170,15 @@ class SimMimWrapper(pl.LightningModule):
     def on_train_epoch_end(self):
         self.stack_update(session="train")
 
-    # def validation_step(self, batch, batch_idx):
-    #     img, lbl = batch
-    #     loss, pred, mask = self.forward(img)
-    #     self.step_output["val"].append(loss)
-    #     return loss
+    def validation_step(self, batch, batch_idx):
+        img, mask = batch["img"]
+        loss = self.forward(img, mask)
+        self.step_output["val"].append(loss.cpu().item())
+        log = {"loss": loss}
+        self.log_dict(log, sync_dist=True, on_step=True, prog_bar=True, logger=True)
 
-    # def on_validation_epoch_end(self):
-    #     self.stack_update(session="val")
+    def on_validation_epoch_end(self):
+        self.stack_update(session="val")
 
     # def test_step(self, batch, batch_idx):
     #     img, lbl = batch
@@ -195,4 +194,4 @@ class SimMimWrapper(pl.LightningModule):
         for key in self.mean_log_keys:
             log[f"{session}_{key}"] = np.stack(self.step_output[session]).mean()
         self.log_dict(log, sync_dist=True, on_epoch=True, prog_bar=True, logger=True)
-        self.step_output["train"].clear()
+        self.step_output[session].clear()
