@@ -10,6 +10,8 @@ from torchvision.transforms import InterpolationMode
 import math
 import random
 
+from utils.amplitude_comparison import match_histograms
+
 
 def train_transformation1():
     return T.Compose([T.Resize((128, 128), InterpolationMode.BICUBIC),
@@ -128,26 +130,6 @@ class GaussianNoise(object):
         return PIL.Image.fromarray(noisy_image_array.astype(np.uint8))
 
 
-class DWT(object):
-    def __init__(self, J: int = 3, wave='db1', mode: str = 'zero'):
-        """
-
-        :param J:  Number of levels of decomposition
-        :param wave: Which wavelet to use.
-        :param mode:  ‘zero’, ‘symmetric’, ‘reflect’ or ‘periodization’. The padding scheme.
-        """
-        # create a DWT transformer
-        self.transformer = DTCWTForward(J=1, biort='near_sym_b', qshift='qshift_b')
-
-    def __call__(self, img):
-        # apply DWT to our image
-        Yl, Yh = self.transformer(img)  # Yl is the lowpass image, Yh are the bandpass images
-        print(Yl.shape)
-        print(Yh.shape)
-        # Convert the noisy image array back to an image
-        return PIL.Image.fromarray(Yh.astype(np.uint8))
-
-
 class CustomRotation:
     def __init__(self, angles=None):
         if angles is None:
@@ -187,37 +169,31 @@ class RandomErasingPIL:
         return img
 
 
-def augmentation_list(size):
-    augs = [
-        # (DWT(), "DWT"),
-        (RandomErasingPIL(), "cutout"),
-        (CustomRotation(angles=[0, 90, 180, 270]), "rotate"),
-        (GaussianNoise(std=9), "noise"),
-        (T.RandomAffine(degrees=0, translate=(0.25, 0.25), scale=(0.75, 1.25)), "affine"),
-        (T.RandomResizedCrop(size=size, interpolation=InterpolationMode.LANCZOS), "crop"),
-        (T.ColorJitter(0.5, 0.5), "color"),
-        (GaussianBlur(kernel_size=int(5), sigma=(0.25, 0.75)), "blur"),
-        (SobelFilter(), "sobel"),
+class MatchHistogramsTransform:
+    def __init__(self, ref_hist):
+        self.ref_hist = ref_hist
 
-    ]
-    return augs
+    def __call__(self, image):
+        # Assuming the input image is a PIL image
+        # Convert PIL image to numpy array
+        image_np = np.array(image)
 
+        # Apply the histogram matching
+        matched_image = match_histograms(image_np, self.ref_hist)
 
-def best_combination():
-    augs = [
-        (RandomErasingPIL(), "cutout"),
-        (CustomRotation(angles=[0, 90, 180, 270]), "rotate"),
-    ]
-    return augs
+        # Convert numpy array back to PIL image
+        matched_image_pil = PIL.Image.fromarray(matched_image)
+        return matched_image_pil
 
 
 def get_finetune_transformation(img_size, mean=0.5, std=0.5):
     return T.Compose([
         T.Resize((img_size, img_size), InterpolationMode.LANCZOS),
         CustomRotation(angles=[0, 90, 180, 270]),
-        T.ColorJitter(0.3, 0.3),
-        GaussianBlur(kernel_size=int(5), sigma=(0.25, 0.75)),
-        SobelFilter(),
+        MatchHistogramsTransform(np.load("../utils/avg_hist.npy")),
+        T.RandomApply(T.ColorJitter(0.2, 0.2), p=0.2),
+        T.RandomApply(GaussianBlur(kernel_size=int(5), sigma=(0.25, 0.75)), p=0.2),
+        T.RandomApply(SobelFilter(), p=0.2),
         T.Grayscale(3),
         T.ToTensor(),
         T.Normalize((mean,), (std,))

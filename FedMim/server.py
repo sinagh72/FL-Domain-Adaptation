@@ -84,8 +84,8 @@ def simulation_main(net, client_fn) -> None:
         num_clients=NUM_CLIENTS,
         config=fl.server.ServerConfig(num_rounds=10),
         strategy=strategy,
-        ray_init_args={"num_gpus": 7, "num_cpus": os.cpu_count() - 4},
-        client_resources={"num_gpus": 7 // NUM_CLIENTS, "num_cpus": (os.cpu_count() - 4)//NUM_CLIENTS},
+        ray_init_args={"num_gpus": torch.cuda.device_count(), "num_cpus": os.cpu_count() - 4},
+        # client_resources={"num_gpus": 7 // NUM_CLIENTS, "num_cpus": (os.cpu_count() - 4)//NUM_CLIENTS},
     )
 
 

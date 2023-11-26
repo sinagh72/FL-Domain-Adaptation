@@ -59,7 +59,8 @@ class FlowerClientMim(FlowerClient):
         early_stopping = EarlyStopping(monitor=config["monitor"], patience=config["patience"], verbose=False,
                                        mode=config["mode"])
         self.net.warmup_epoch = config["epochs"] // 10
-        tb_logger = TensorBoardLogger(save_dir=os.path.join(f"simmim_{config['epochs']}", "tb_log/"), name=self.client_name)
+        tb_logger = TensorBoardLogger(save_dir=os.path.join(f"simmim_{config['epochs']}", "tb_log/"),
+                                      name=self.client_name)
         trainer = pl.Trainer(accelerator='gpu', devices=[0], max_epochs=config["epochs"],
                              callbacks=[early_stopping],
                              logger=[tb_logger],

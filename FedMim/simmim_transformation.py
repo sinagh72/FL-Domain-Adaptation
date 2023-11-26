@@ -1,7 +1,7 @@
 import numpy as np
 from torchvision.transforms import transforms as T, InterpolationMode
 
-from utils.transformations import CustomRotation
+from utils.transformations import CustomRotation, MatchHistogramsTransform
 
 
 class MaskGenerator:
@@ -36,6 +36,7 @@ class SimMIMTransform:
         self.transform_img = T.Compose([
             T.Resize((img_size, img_size), InterpolationMode.LANCZOS),
             CustomRotation(angles=[0, 90, 180, 270]),
+            MatchHistogramsTransform(np.load("../utils/avg_hist.npy")),
             T.Grayscale(3),
             T.ToTensor(),
             T.Normalize((mean,), (std,))
