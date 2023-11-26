@@ -9,8 +9,35 @@ from torchvision.transforms import transforms as T, GaussianBlur
 from torchvision.transforms import InterpolationMode
 import math
 import random
+import cv2
 
-from utils.amplitude_comparison import match_histograms
+
+def compute_cdf(hist):
+    # Calculate the cumulative distribution function from the histogram
+    cdf = hist.cumsum()
+    cdf_normalized = cdf / float(cdf.max())  # Normalize
+    return cdf_normalized
+
+
+def match_histograms(image, ref_hist):
+    # Calculate the histogram for the image
+    hist_img = cv2.calcHist([image], [0], None, [256], [0, 256]).ravel()
+    cv2.normalize(hist_img, hist_img)
+
+    # Compute the CDF for image and reference
+    cdf_img = compute_cdf(hist_img)
+    cdf_ref = compute_cdf(ref_hist)
+
+    # Create a lookup table
+    lookup_table = np.zeros(256)
+    for i in range(256):
+        diff_cdf = np.abs(cdf_ref - cdf_img[i])
+        closest_index = np.argmin(diff_cdf)
+        lookup_table[i] = closest_index
+
+    # Apply the mapping to the image
+    matched_image = cv2.LUT(image, lookup_table)
+    return matched_image
 
 
 def train_transformation1():
@@ -170,7 +197,9 @@ class RandomErasingPIL:
 
 
 class MatchHistogramsTransform:
-    def __init__(self, ref_hist):
+    def __init__(self, ref_hist=None):
+        if ref_hist is None:
+            ref_hist = np.load("../utils/avg_hist.npy")
         self.ref_hist = ref_hist
 
     def __call__(self, image):
@@ -182,7 +211,7 @@ class MatchHistogramsTransform:
         matched_image = match_histograms(image_np, self.ref_hist)
 
         # Convert numpy array back to PIL image
-        matched_image_pil = PIL.Image.fromarray(matched_image)
+        matched_image_pil = PIL.Image.fromarray(matched_image).convert("L")
         return matched_image_pil
 
 
@@ -190,10 +219,10 @@ def get_finetune_transformation(img_size, mean=0.5, std=0.5):
     return T.Compose([
         T.Resize((img_size, img_size), InterpolationMode.LANCZOS),
         CustomRotation(angles=[0, 90, 180, 270]),
-        MatchHistogramsTransform(np.load("../utils/avg_hist.npy")),
-        T.RandomApply(T.ColorJitter(0.2, 0.2), p=0.2),
-        T.RandomApply(GaussianBlur(kernel_size=int(5), sigma=(0.25, 0.75)), p=0.2),
-        T.RandomApply(SobelFilter(), p=0.2),
+        MatchHistogramsTransform(),
+        T.RandomApply([T.ColorJitter(0.2, 0.2)], p=0.2),
+        T.RandomApply([GaussianBlur(kernel_size=int(5), sigma=(0.25, 0.75))], p=0.2),
+        T.RandomApply([SobelFilter()], p=0.2),
         T.Grayscale(3),
         T.ToTensor(),
         T.Normalize((mean,), (std,))
