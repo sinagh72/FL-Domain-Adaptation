@@ -38,10 +38,10 @@ def count_classes_and_compute_weights(data_loader):
 
 
 class FlowerClientMim(FlowerClient):
-    def __init__(self, net, cls, cls_train_loader, cls_val_loader, test_loader,
+    def __init__(self, net, param, cls_train_loader, cls_val_loader, test_loader,
                  masked_train_loader, masked_val_loader, client_name, architecture):
         super().__init__(net, masked_train_loader, masked_val_loader, test_loader, client_name, architecture)
-        self.cls = cls
+        self.param = param
         self.cls_train_loader = cls_train_loader
         self.cls_val_loader = cls_val_loader
         self.client_name = client_name
@@ -88,11 +88,20 @@ class FlowerClientMim(FlowerClient):
                              logger=[tb_logger],
                              enable_checkpointing=False,
                              )
-        trainer.fit(model=self.cls, train_dataloaders=self.cls_train_loader, val_dataloaders=self.cls_val_loader)
-        test_results = trainer.test(self.cls, self.test_loader, verbose=True)
+        model = FedMim(encoder=copy.deepcopy(self.net.model.encoder),
+                       wd=self.param["wd"],
+                       lr=self.param["lr"],
+                       beta1=self.param["beta1"],
+                       beta2=self.param["beta2"],
+                       step_size=self.param["step_size"], gamma=0.5,
+                       classes=self.param["classes"],
+                       class_weights=self.param["weights"]
+                       )
+        trainer.fit(model=model, train_dataloaders=self.cls_train_loader, val_dataloaders=self.cls_val_loader)
+        test_results = trainer.test(model, self.test_loader, verbose=True)
         loss = test_results[0]["test_loss"]
         print("============================")
-        log_results(classes=self.cls.classes,
+        log_results(classes=model,
                     results=test_results,
                     client_name=self.client_name,
                     architecture=self.architecture,
@@ -156,16 +165,10 @@ def client_fn_Mim(cid: str) -> FlowerClientMim:
         torch.save(weights, f'{client_name}_weights.pt')
         print("client: ", client_name, class_counts)
     step_size = len(cls_train_loader) // batch_size * 5
-    model = FedMim(encoder=simim.model.encoder,
-                   wd=param["wd"],
-                   lr=param["lr"],
-                   beta1=param["beta1"],
-                   beta2=param["beta2"],
-                   step_size=step_size, gamma=0.5,
-                   classes=classes,
-                   class_weights=weights
-                   )
-    return FlowerClientMim(simim, model, cls_train_loader, cls_val_loader, test_loader, train_loader, val_loader,
+    param["classes"] = classes
+    param["weights"] = weights
+    param["step_size"] = step_size
+    return FlowerClientMim(simim, param, cls_train_loader, cls_val_loader, test_loader, train_loader, val_loader,
                            client_name=client_name, architecture=architecture)
 
 # if __name__ == "__main__":
