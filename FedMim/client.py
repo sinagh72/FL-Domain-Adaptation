@@ -101,7 +101,7 @@ class FlowerClientMim(FlowerClient):
         test_results = trainer.test(model, self.test_loader, verbose=True)
         loss = test_results[0]["test_loss"]
         print("============================")
-        log_results(classes=model,
+        log_results(classes=self.param["classes"],
                     results=test_results,
                     client_name=self.client_name,
                     architecture=self.architecture,
