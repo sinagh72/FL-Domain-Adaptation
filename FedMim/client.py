@@ -149,8 +149,12 @@ def client_fn_Mim(cid: str) -> FlowerClientMim:
                           warmup_epochs=10,
                           )
     param = get_hyperparameters(client_name, "ViT")
-    class_counts, weights = count_classes_and_compute_weights(cls_train_loader)
-    print("client: ", client_name, class_counts)
+    if os.path.exists(f"{client_name}_weights.pt"):
+        weights = torch.load(f"{client_name}_weights.pt")
+    else:
+        class_counts, weights = count_classes_and_compute_weights(cls_train_loader)
+        torch.save(weights, f'{client_name}_weights.pt')
+        print("client: ", client_name, class_counts)
     step_size = len(cls_train_loader) // batch_size * 5
     model = FedMim(encoder=simim.model.encoder,
                    wd=param["wd"],

@@ -36,9 +36,11 @@ def get_dataloaders(cid, dataset_path, batch_size, kermany_classes, srinivasan_c
     elif cid == "2":
         classes = oct500_classes
         oct500_dataset_train_6mm, oct500_dataset_val_6mm, oct500_dataset_test_6mm = \
-            get_oct500_datasets(dataset_path + "/2/OCTA_6mm", oct500_classes, img_transformation=img_transforms, filter_img=True)
+            get_oct500_datasets(dataset_path + "/2/OCTA_6mm", oct500_classes, img_transformation=img_transforms,
+                                filter_img=filter_img)
         oct500_dataset_train_3mm, oct500_dataset_val_3mm, oct500_dataset_test_3mm = \
-            get_oct500_datasets(dataset_path + "/2/OCTA_3mm", oct500_classes, img_transformation=img_transforms,filter_img=True)
+            get_oct500_datasets(dataset_path + "/2/OCTA_3mm", oct500_classes, img_transformation=img_transforms,
+                                filter_img=filter_img)
 
         oct500_dataset_train = torch.utils.data.ConcatDataset([oct500_dataset_train_6mm, oct500_dataset_train_3mm])
         oct500_dataset_val = torch.utils.data.ConcatDataset([oct500_dataset_val_6mm, oct500_dataset_val_3mm])
