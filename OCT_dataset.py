@@ -245,17 +245,11 @@ def get_oct500_imgs(data_root: str, **kwargs):
         # print("len val"c[0], len(val))
         # print("len test"c[0], len(test))
         if mode == "train":
-            temp_path += get_oct500(train, data_root, class_label=c[1])
-            if "limit_train" in kwargs and kwargs["limit_train"] > 0:
-                temp_path = temp_path[0:kwargs["limit_train"] // len(classes)]
+            temp_path += get_oct500(train, data_root, class_label=c[1], filter_img=kwargs["filter_img"])
         elif mode == "val":
-            temp_path += get_oct500(val, data_root, class_label=c[1])
-            if "limit_val" in kwargs and kwargs["limit_val"] > 0:
-                temp_path = temp_path[0:kwargs["limit_val"] // len(classes)]
+            temp_path += get_oct500(val, data_root, class_label=c[1], filter_img=kwargs["filter_img"])
         elif mode == "test":
-            temp_path += get_oct500(test, data_root, class_label=c[1])
-            if "limit_test" in kwargs and kwargs["limit_test"] > 0:
-                temp_path = temp_path[0:kwargs["limit_test"] // len(classes)]
+            temp_path += get_oct500(test, data_root, class_label=c[1], filter_img=kwargs["filter_img"])
         img_paths += temp_path
     return img_paths
     # train_amd, val_amd, test_amd = split_oct500(amd_ids, train_val_test)
@@ -283,13 +277,15 @@ def split_oct500(total_ids: list, train_val_test: tuple):
         total_ids[math.ceil(len(total_ids) * train_val_test[1]) + train_idx + 1:]
 
 
-def get_oct500(list_ids, data_root, class_label, filter=True):
+def get_oct500(list_ids, data_root, class_label, filter_img=True):
     img_paths = []
     for idd in list_ids:
         file_path = os.path.join(data_root, "OCT", str(idd))
         for img in os.listdir(file_path):
-            if filter and (("6mm" in data_root and 160 <= int(img[:-4]) <= 240) or \
-                    ("3mm" in data_root and 100 <= int(img[:-4]) <= 180)):
+            if filter_img and (("6mm" in data_root and 160 <= int(img[:-4]) <= 240) or
+                           ("3mm" in data_root and 100 <= int(img[:-4]) <= 180)):
+                img_paths.append((os.path.join(file_path, img), class_label))
+            else:
                 img_paths.append((os.path.join(file_path, img), class_label))
         # img_paths += [(os.path.join(file_path, img), class_label)
         #               for img in os.listdir(file_path)]

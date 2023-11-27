@@ -1,13 +1,10 @@
-import torch.nn.functional as F
 import PIL.Image
 import numpy as np
 import torchvision.transforms.functional as TF
 from PIL import ImageOps, ImageFilter, ImageDraw
 from numpy import random
-from torch import nn
 from torchvision.transforms import transforms as T, GaussianBlur
 from torchvision.transforms import InterpolationMode
-import math
 import random
 import cv2
 
@@ -219,7 +216,7 @@ def get_finetune_transformation(img_size, mean=0.5, std=0.5):
     return T.Compose([
         T.Resize((img_size, img_size), InterpolationMode.LANCZOS),
         CustomRotation(angles=[0, 90, 180, 270]),
-        MatchHistogramsTransform(),
+        # MatchHistogramsTransform(),
         T.RandomApply([T.ColorJitter(0.2, 0.2)], p=0.2),
         T.RandomApply([GaussianBlur(kernel_size=int(5), sigma=(0.25, 0.75))], p=0.2),
         T.RandomApply([SobelFilter()], p=0.2),
@@ -229,26 +226,10 @@ def get_finetune_transformation(img_size, mean=0.5, std=0.5):
     ])
 
 
-def get_base_transform(size):
-    return [T.Resize((size, size), InterpolationMode.LANCZOS),
-            T.Grayscale(3),
-            T.ToTensor(),
-            # T.Normalize((0.5,), (0.5,))
-            ]
-
-
-def get_nst_transform(size):
-    return T.Compose([T.Resize(size=(size, size), interpolation=InterpolationMode.LANCZOS),
-                      T.Grayscale(3),
-                      T.ToTensor()])
-
-
-def representation_transform(img):
-    transform = T.Compose([T.RandomHorizontalFlip(p=0.5),
-                           T.RandomRotation(degrees=45),
-                           T.RandomPerspective(distortion_scale=0.5, p=0.5),
-                           T.RandomGrayscale(p=0.2),
-                           T.GaussianBlur(kernel_size=9),
-                           T.Grayscale(1),
-                           ])
-    return transform(img.copy())
+def get_test_transformation(img_size, mean=0.5, std=0.5):
+    return T.Compose([
+        T.Resize((img_size, img_size), InterpolationMode.LANCZOS),
+        T.Grayscale(3),
+        T.ToTensor(),
+        T.Normalize((mean,), (std,))
+    ])

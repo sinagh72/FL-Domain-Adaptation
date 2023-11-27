@@ -1,6 +1,7 @@
 from torch.utils.data import DataLoader
 
 from OCT_dataset import OCTDataset, get_oct500_imgs, get_srinivasan_imgs, get_kermany_imgs
+from utils.transformations import get_test_transformation
 
 
 def get_data_loaders(train_dataset, val_dataset, batch_size, num_workers=4):
@@ -11,7 +12,7 @@ def get_data_loaders(train_dataset, val_dataset, batch_size, num_workers=4):
     return train_loader, valid_loader
 
 
-def get_oct500_datasets(dataset_path, classes, img_transformation, limit_train=0, limit_val=0, limit_test=0):
+def get_oct500_datasets(dataset_path, classes, img_transformation, filter_img):
     train_val_test = (0.85, 0.025, 0.125)
     oct500_dataset_train = OCTDataset(data_root=dataset_path,
                                       transform=img_transformation,
@@ -19,7 +20,7 @@ def get_oct500_datasets(dataset_path, classes, img_transformation, limit_train=0
                                       mode="train",
                                       train_val_test=train_val_test,
                                       dataset_func=get_oct500_imgs,
-                                      limit_train=limit_train
+                                      filter_img=filter_img
                                       )
     oct500_dataset_val = OCTDataset(data_root=dataset_path,
                                     transform=img_transformation,
@@ -27,17 +28,18 @@ def get_oct500_datasets(dataset_path, classes, img_transformation, limit_train=0
                                     mode="val",
                                     train_val_test=train_val_test,
                                     dataset_func=get_oct500_imgs,
-                                    limit_val=limit_val
+                                    filter_img=filter_img
                                     )
 
     oct500_dataset_test = OCTDataset(data_root=dataset_path,
-                                     transform=img_transformation,
+                                     transform=get_test_transformation(128, 0.5, 0.5),
                                      classes=classes,
                                      mode="test",
                                      train_val_test=train_val_test,
                                      dataset_func=get_oct500_imgs,
-                                     limit_test=limit_test
+                                     filter_img=filter_img
                                      )
+
     return oct500_dataset_train, oct500_dataset_val, oct500_dataset_test
 
 
@@ -58,7 +60,7 @@ def get_srinivasan_datasets(train_path, test_path, classes, img_transformation):
                                         )
 
     srinivasan_dataset_test = OCTDataset(data_root=test_path,
-                                         transform=img_transformation,
+                                         transform=get_test_transformation(128, 0.5, 0.5),
                                          classes=classes,
                                          ignore_folders=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
                                          sub_folders_name="TIFFs/8bitTIFFs",
@@ -87,7 +89,7 @@ def get_kermany_datasets(train_path, test_path, classes, img_transformation, lim
                                      )
 
     kermany_dataset_test = OCTDataset(data_root=test_path,
-                                      transform=img_transformation,
+                                      transform=get_test_transformation(128, 0.5, 0.5),
                                       classes=classes,
                                       mode="test",
                                       dataset_func=get_kermany_imgs,

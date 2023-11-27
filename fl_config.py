@@ -5,7 +5,8 @@ import torch
 from utils.data_handler import get_oct500_datasets, get_data_loaders, get_srinivasan_datasets, get_kermany_datasets
 
 
-def get_dataloaders(cid, dataset_path, batch_size, kermany_classes, srinivasan_classes, oct500_classes, img_transforms):
+def get_dataloaders(cid, dataset_path, batch_size, kermany_classes, srinivasan_classes, oct500_classes, img_transforms,
+                    filter_img=True):
     train_loader = None
     val_loader = None
     test_loader = None
@@ -35,9 +36,9 @@ def get_dataloaders(cid, dataset_path, batch_size, kermany_classes, srinivasan_c
     elif cid == "2":
         classes = oct500_classes
         oct500_dataset_train_6mm, oct500_dataset_val_6mm, oct500_dataset_test_6mm = \
-            get_oct500_datasets(dataset_path + "/2/OCTA_6mm", oct500_classes, img_transformation=img_transforms)
+            get_oct500_datasets(dataset_path + "/2/OCTA_6mm", oct500_classes, img_transformation=img_transforms, filter_img=True)
         oct500_dataset_train_3mm, oct500_dataset_val_3mm, oct500_dataset_test_3mm = \
-            get_oct500_datasets(dataset_path + "/2/OCTA_3mm", oct500_classes, img_transformation=img_transforms)
+            get_oct500_datasets(dataset_path + "/2/OCTA_3mm", oct500_classes, img_transformation=img_transforms,filter_img=True)
 
         oct500_dataset_train = torch.utils.data.ConcatDataset([oct500_dataset_train_6mm, oct500_dataset_train_3mm])
         oct500_dataset_val = torch.utils.data.ConcatDataset([oct500_dataset_val_6mm, oct500_dataset_val_3mm])
