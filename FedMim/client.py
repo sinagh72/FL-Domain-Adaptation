@@ -7,12 +7,11 @@ from lightning.pytorch.callbacks import EarlyStopping
 import lightning.pytorch as pl
 from FedMim.fedmim import FedMim
 from FedMim.simmim import SimMimWrapper
-from FedMim.simmim_transformation import SimMIMTransform
 from fl_client import FlowerClient
 import os
 from fl_config import get_dataloaders, log_results
 from utils.data_handler import get_datasets_classes, get_datasets_full_classes
-from utils.transformations import get_finetune_transformation
+from utils.transformations import get_finetune_transformation, SimMIMTransform
 from utils.utils import set_seed, get_hyperparameters
 from lightning.pytorch.loggers import TensorBoardLogger
 
@@ -87,6 +86,7 @@ class FlowerClientMim(FlowerClient):
                              callbacks=[early_stopping],
                              logger=[tb_logger],
                              enable_checkpointing=False,
+                             log_every_n_steps=1
                              )
         model = FedMim(encoder=copy.deepcopy(self.net.model.encoder),
                        wd=self.param["wd"],

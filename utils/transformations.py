@@ -37,23 +37,6 @@ def match_histograms(image, ref_hist):
     return matched_image
 
 
-def train_transformation1():
-    return T.Compose([T.Resize((128, 128), InterpolationMode.BICUBIC),
-                      T.RandomHorizontalFlip(p=0.25),
-                      T.RandomVerticalFlip(p=0.25),
-                      T.RandomRotation(degrees=30),
-                      T.RandomPerspective(distortion_scale=0.5, p=0.25),
-                      T.RandomApply([
-                          T.ColorJitter(brightness=0.2, contrast=0.2),
-                          T.GaussianBlur(kernel_size=3),
-                          T.RandomAffine(degrees=(30, 70), translate=(0.1, 0.3), scale=(0.5, 0.75)),
-                          T.ElasticTransform(alpha=(50.0, 250.0), sigma=(5.0, 10.0))
-                      ], p=0.25),
-                      T.Grayscale(3),
-                      T.ToTensor(),
-                      T.Normalize((0.5,), (0.5,)),
-                      # transforms.Lambda(lambda x: torch.cat([x, x, x], 0)),
-                      ])
 
 
 class RandomCrop(object):
@@ -165,34 +148,6 @@ class CustomRotation:
         return TF.rotate(image, angle)
 
 
-class RandomErasingPIL:
-    def __init__(self, scale=(0.02, 0.1), ratio=(0.3, 3)):
-        """
-        scale: A tuple indicating the range of the proportion of the erased area against the entire image area.
-        ratio: A tuple specifying the range of the aspect ratio of the erased area.
-        """
-        self.scale = scale
-        self.ratio = ratio
-
-    def __call__(self, img):
-        for _ in range(100):
-            area = img.size[0] * img.size[1]
-            target_area = random.uniform(*self.scale) * area
-            aspect_ratio = random.uniform(*self.ratio)
-
-            h = int(round((target_area * aspect_ratio) ** 0.5))
-            w = int(round((target_area / aspect_ratio) ** 0.5))
-
-            if w <= img.size[0] and h <= img.size[1]:
-                x1 = random.randint(0, img.size[0] - w)
-                y1 = random.randint(0, img.size[1] - h)
-                img = img.copy()
-                ImageDraw.Draw(img).rectangle([x1, y1, x1 + w, y1 + h], fill=random.randint(0, 255))
-                return img
-
-        return img
-
-
 class MatchHistogramsTransform:
     def __init__(self, ref_hist=None):
         if ref_hist is None:
@@ -212,6 +167,80 @@ class MatchHistogramsTransform:
         return matched_image_pil
 
 
+
+class MaskGenerator:
+    def __init__(self, input_size=192, mask_patch_size=32, model_patch_size=4, mask_ratio=0.6):
+        self.input_size = input_size
+        self.mask_patch_size = mask_patch_size
+        self.model_patch_size = model_patch_size
+        self.mask_ratio = mask_ratio
+
+        assert self.input_size % self.mask_patch_size == 0
+        assert self.mask_patch_size % self.model_patch_size == 0
+
+        self.rand_size = self.input_size // self.mask_patch_size
+        self.scale = self.mask_patch_size // self.model_patch_size
+
+        self.token_count = self.rand_size ** 2
+        self.mask_count = int(np.ceil(self.token_count * self.mask_ratio))
+
+    def __call__(self):
+        mask_idx = np.random.permutation(self.token_count)[:self.mask_count]
+        mask = np.zeros(self.token_count, dtype=int)
+        mask[mask_idx] = 1
+
+        mask = mask.reshape((self.rand_size, self.rand_size))
+        mask = mask.repeat(self.scale, axis=0).repeat(self.scale, axis=1)
+
+        return mask
+
+
+class SimMIMTransform:
+    def __init__(self, img_size, model_patch_size, mask_patch_size, mask_ratio, mean, std):
+        self.transform_img = T.Compose([
+            T.Resize((img_size, img_size), InterpolationMode.BICUBIC),
+            # CustomRotation(angles=[0, 90, 180, 270]),
+            # MatchHistogramsTransform(np.load("../utils/avg_hist.npy")),
+            # T.RandomApply([T.ColorJitter(0.2, 0.2)], p=0.2),
+            # T.RandomApply([GaussianBlur(kernel_size=int(5), sigma=(0.25, 0.75))], p=0.2),
+            # T.RandomApply([SobelFilter()], p=0.2),
+            # T.RandomApply([T.ElasticTransform(alpha=(50.0, 250.0), sigma=(5.0, 10.0))], p=0.2),
+            # T.Grayscale(3),
+            T.ToTensor(),
+            # T.Normalize((mean,), (std,))
+        ])
+
+        self.mask_generator = MaskGenerator(
+            input_size=img_size,
+            mask_patch_size=mask_patch_size,
+            model_patch_size=model_patch_size,
+            mask_ratio=mask_ratio,
+        )
+
+    def __call__(self, img):
+        img = self.transform_img(img)
+        mask = self.mask_generator()
+
+        return img, mask
+
+
+def train_transformation1():
+    return T.Compose([T.Resize((128, 128), InterpolationMode.BICUBIC),
+                      T.RandomHorizontalFlip(p=0.25),
+                      T.RandomVerticalFlip(p=0.25),
+                      T.RandomRotation(degrees=30),
+                      T.RandomPerspective(distortion_scale=0.5, p=0.25),
+                      T.RandomApply([
+                          T.ColorJitter(brightness=0.2, contrast=0.2),
+                          T.GaussianBlur(kernel_size=3),
+                          T.RandomAffine(degrees=(30, 70), translate=(0.1, 0.3), scale=(0.5, 0.75)),
+                          T.ElasticTransform(alpha=(50.0, 250.0), sigma=(5.0, 10.0))
+                      ], p=0.25),
+                      T.Grayscale(3),
+                      T.ToTensor(),
+                      T.Normalize((0.5,), (0.5,)),
+                      # transforms.Lambda(lambda x: torch.cat([x, x, x], 0)),
+                      ])
 def get_finetune_transformation(img_size, mean=0.5, std=0.5):
     return T.Compose([
         T.Resize((img_size, img_size), InterpolationMode.LANCZOS),
@@ -233,3 +262,5 @@ def get_test_transformation(img_size, mean=0.5, std=0.5):
         T.ToTensor(),
         T.Normalize((mean,), (std,))
     ])
+
+

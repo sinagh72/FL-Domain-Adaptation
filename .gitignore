@@ -12,4 +12,7 @@ models/__pycache__/
 /data/.env
 /FedMim/res e1 - matching simmim and cls/
 /FedMim/res e1 - matching cls only/
+/FedMim/res e1 - matching simmim only/simmim_1/
+/FedMim/res e1 - matching simmim only/cls1/
+/FedMim/cls1/
 /FedMim/simmim_1/
