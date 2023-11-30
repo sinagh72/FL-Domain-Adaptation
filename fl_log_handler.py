@@ -8,7 +8,7 @@ import scipy
 
 if __name__ == "__main__":
     metrics = ['test_precision_NORMAL', 'test_accuracy_AMD', 'test_precision_AMD', 'f1_score', 'auc', 'loss']
-    log_root = "./FedMim/log_e10"
+    log_root = "./FedMim/log_e1"
     rep = 10
 
     res_dic = {}

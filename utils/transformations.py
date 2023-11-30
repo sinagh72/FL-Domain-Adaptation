@@ -199,15 +199,15 @@ class SimMIMTransform:
     def __init__(self, img_size, model_patch_size, mask_patch_size, mask_ratio, mean, std):
         self.transform_img = T.Compose([
             T.Resize((img_size, img_size), InterpolationMode.BICUBIC),
-            # CustomRotation(angles=[0, 90, 180, 270]),
+            CustomRotation(angles=[0, 90, 180, 270]),
             # MatchHistogramsTransform(np.load("../utils/avg_hist.npy")),
-            # T.RandomApply([T.ColorJitter(0.2, 0.2)], p=0.2),
-            # T.RandomApply([GaussianBlur(kernel_size=int(5), sigma=(0.25, 0.75))], p=0.2),
-            # T.RandomApply([SobelFilter()], p=0.2),
-            # T.RandomApply([T.ElasticTransform(alpha=(50.0, 250.0), sigma=(5.0, 10.0))], p=0.2),
-            # T.Grayscale(3),
+            T.RandomApply([T.ColorJitter(0.2, 0.2)], p=0.2),
+            T.RandomApply([GaussianBlur(kernel_size=int(5), sigma=(0.25, 0.75))], p=0.2),
+            T.RandomApply([SobelFilter()], p=0.2),
+            T.RandomApply([T.ElasticTransform(alpha=(50.0, 250.0), sigma=(5.0, 10.0))], p=0.2),
+            T.Grayscale(3),
             T.ToTensor(),
-            # T.Normalize((mean,), (std,))
+            T.Normalize((mean,), (std,))
         ])
 
         self.mask_generator = MaskGenerator(

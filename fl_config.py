@@ -11,7 +11,6 @@ def get_dataloaders(cid, dataset_path, batch_size, kermany_classes, srinivasan_c
     val_loader = None
     test_loader = None
     classes = None
-
     if cid == "0":
         classes = kermany_classes
         kermany_dataset_train, kermany_dataset_val, kermany_dataset_test = get_kermany_datasets(
@@ -22,16 +21,18 @@ def get_dataloaders(cid, dataset_path, batch_size, kermany_classes, srinivasan_c
         train_loader, val_loader = get_data_loaders(kermany_dataset_train, kermany_dataset_val, batch_size)
         test_loader = DataLoader(kermany_dataset_test, batch_size=1, shuffle=False,
                                  drop_last=False, pin_memory=True, num_workers=4)
+        print("kermany len:", len(kermany_dataset_train)+ len(kermany_dataset_val)+len(kermany_dataset_test))
+
 
     elif cid == "1":
         classes = srinivasan_classes
         srinivasan_dataset_train, srinivasan_dataset_val, srinivasan_dataset_test = get_srinivasan_datasets(
             train_path=dataset_path + "/1/train", test_path=dataset_path + "/1/test", classes=srinivasan_classes,
             img_transformation=img_transforms)
+        print("srinivasan len:", len(srinivasan_dataset_train)+ len(srinivasan_dataset_val)+len(srinivasan_dataset_test))
         train_loader, val_loader = get_data_loaders(srinivasan_dataset_train, srinivasan_dataset_val, batch_size)
         test_loader = DataLoader(srinivasan_dataset_test, batch_size=1, shuffle=False,
                                  drop_last=False, pin_memory=True, num_workers=4)
-        print("srinivasan len:", len(train_loader))
 
     elif cid == "2":
         classes = oct500_classes
@@ -49,7 +50,8 @@ def get_dataloaders(cid, dataset_path, batch_size, kermany_classes, srinivasan_c
         train_loader, val_loader = get_data_loaders(oct500_dataset_train, oct500_dataset_val, batch_size)
         test_loader = DataLoader(oct500_dataset_test, batch_size=1, shuffle=False,
                                  drop_last=False, pin_memory=True, num_workers=4)
-        print("OCT 500 len:", len(train_loader))
+        print("OCT500 len:", len(oct500_dataset_train)+ len(oct500_dataset_val)+len(oct500_dataset_test))
+
 
     return train_loader, val_loader, test_loader, classes
 

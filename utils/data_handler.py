@@ -133,4 +133,4 @@ def get_datasets_full_classes():
                       ("RVO", 5),
                       ("CSC", 6),
                       ]
-    return srinivasan_classes, kermany_classes, oct500_classes
+    return kermany_classes, srinivasan_classes, oct500_classes
