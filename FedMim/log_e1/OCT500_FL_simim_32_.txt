@@ -1,0 +1,116 @@
+=============1=======================
+{'test_accuracy_NORMAL': 0.9378306865692139, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.6328125, 'f1_score': 0.7751196026802063, 'auc': 0.9689153432846069, 'loss': 0.14119312167167664}
+=============2=======================
+{'test_accuracy_NORMAL': 0.9669312238693237, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7641509175300598, 'f1_score': 0.866310179233551, 'auc': 0.9834656119346619, 'loss': 0.08614400029182434}
+=============3=======================
+{'test_accuracy_NORMAL': 0.9788359999656677, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8350515365600586, 'f1_score': 0.9101123809814453, 'auc': 0.9894180297851562, 'loss': 0.06898621469736099}
+=============4=======================
+{'test_accuracy_NORMAL': 0.9722222089767456, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7941176295280457, 'f1_score': 0.8852459192276001, 'auc': 0.9861111044883728, 'loss': 0.08945316076278687}
+=============5=======================
+{'test_accuracy_NORMAL': 0.9351851940155029, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.6230769157409668, 'f1_score': 0.7677724957466125, 'auc': 0.9675925970077515, 'loss': 0.18438301980495453}
+=============6=======================
+{'test_accuracy_NORMAL': 0.9766314029693604, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8209459185600281, 'f1_score': 0.9016697406768799, 'auc': 0.9883157014846802, 'loss': 0.07164108753204346}
+=============7=======================
+{'test_accuracy_NORMAL': 0.9541445970535278, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7002881765365601, 'f1_score': 0.8237287998199463, 'auc': 0.9770722985267639, 'loss': 0.11535938829183578}
+=============8=======================
+{'test_accuracy_NORMAL': 0.9673721194267273, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7665615081787109, 'f1_score': 0.8678571581840515, 'auc': 0.9836860299110413, 'loss': 0.08445288240909576}
+=============9=======================
+{'test_accuracy_NORMAL': 0.9841269850730896, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8709677457809448, 'f1_score': 0.931034505367279, 'auc': 0.9920635223388672, 'loss': 0.05357806384563446}
+=============10=======================
+{'test_accuracy_NORMAL': 0.9819223880767822, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8556337952613831, 'f1_score': 0.9222011566162109, 'auc': 0.9909611940383911, 'loss': 0.06700431555509567}
+=============1=======================
+{'test_accuracy_NORMAL': 0.9378306865692139, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.6328125, 'f1_score': 0.7751196026802063, 'auc': 0.9689153432846069, 'loss': 0.14119312167167664}
+=============2=======================
+{'test_accuracy_NORMAL': 0.9669312238693237, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7641509175300598, 'f1_score': 0.866310179233551, 'auc': 0.9834656119346619, 'loss': 0.08614379912614822}
+=============3=======================
+{'test_accuracy_NORMAL': 0.9805996417999268, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8466898798942566, 'f1_score': 0.9169811606407166, 'auc': 0.9902998208999634, 'loss': 0.07367457449436188}
+=============4=======================
+{'test_accuracy_NORMAL': 0.9638447761535645, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7476922869682312, 'f1_score': 0.8556337952613831, 'auc': 0.9819223880767822, 'loss': 0.09883501380681992}
+=============5=======================
+{'test_accuracy_NORMAL': 0.9576719403266907, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7168141603469849, 'f1_score': 0.8350515365600586, 'auc': 0.978835940361023, 'loss': 0.12337251752614975}
+=============6=======================
+{'test_accuracy_NORMAL': 0.9691358208656311, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7763578295707703, 'f1_score': 0.8741007447242737, 'auc': 0.9845679402351379, 'loss': 0.09559665620326996}
+=============7=======================
+{'test_accuracy_NORMAL': 0.9611992835998535, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7341389656066895, 'f1_score': 0.8466898798942566, 'auc': 0.9805996417999268, 'loss': 0.13030663132667542}
+=============8=======================
+{'test_accuracy_NORMAL': 0.9713403582572937, 'test_precision_NORMAL': 0.9990929961204529, 'test_accuracy_AMD': 0.991769552230835, 'test_precision_AMD': 0.7875816822052002, 'f1_score': 0.8779599070549011, 'auc': 0.9815550446510315, 'loss': 0.0937366932630539}
+=============9=======================
+{'test_accuracy_NORMAL': 0.9700176119804382, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7813504934310913, 'f1_score': 0.8772563338279724, 'auc': 0.9850087761878967, 'loss': 0.10893607139587402}
+=============10=======================
+{'test_accuracy_NORMAL': 0.9770722985267639, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8237287998199463, 'f1_score': 0.9033457040786743, 'auc': 0.9885361194610596, 'loss': 0.06991669535636902}
+=============1=======================
+{'test_accuracy_NORMAL': 0.9378306865692139, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.6328125, 'f1_score': 0.7751196026802063, 'auc': 0.9689153432846069, 'loss': 0.14119312167167664}
+=============2=======================
+{'test_accuracy_NORMAL': 0.9664903283119202, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7617554664611816, 'f1_score': 0.8647686839103699, 'auc': 0.9832451343536377, 'loss': 0.08624660223722458}
+=============3=======================
+{'test_accuracy_NORMAL': 0.9620811343193054, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.738601803779602, 'f1_score': 0.8496503233909607, 'auc': 0.9810405969619751, 'loss': 0.0975121557712555}
+=============4=======================
+{'test_accuracy_NORMAL': 0.9757495522499084, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8154362440109253, 'f1_score': 0.8983364105224609, 'auc': 0.9878747463226318, 'loss': 0.0659262090921402}
+=============5=======================
+{'test_accuracy_NORMAL': 0.976190447807312, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8181818127632141, 'f1_score': 0.8999999761581421, 'auc': 0.988095223903656, 'loss': 0.06792552024126053}
+=============6=======================
+{'test_accuracy_NORMAL': 0.9805996417999268, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8466898798942566, 'f1_score': 0.9169811606407166, 'auc': 0.9902998208999634, 'loss': 0.05224493891000748}
+=============7=======================
+{'test_accuracy_NORMAL': 0.9757495522499084, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8154362440109253, 'f1_score': 0.8983364105224609, 'auc': 0.9878747463226318, 'loss': 0.06858521699905396}
+=============8=======================
+{'test_accuracy_NORMAL': 0.9704585671424866, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7838709950447083, 'f1_score': 0.8788426518440247, 'auc': 0.9852293133735657, 'loss': 0.09023942053318024}
+=============9=======================
+{'test_accuracy_NORMAL': 0.9695767164230347, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7788461446762085, 'f1_score': 0.8756756782531738, 'auc': 0.9847883582115173, 'loss': 0.08454222232103348}
+=============10=======================
+{'test_accuracy_NORMAL': 0.971781313419342, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.791530966758728, 'f1_score': 0.8836363554000854, 'auc': 0.9858906865119934, 'loss': 0.06774839758872986}
+=============1=======================
+{'test_accuracy_NORMAL': 0.9378306865692139, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.6328125, 'f1_score': 0.7751196026802063, 'auc': 0.9689153432846069, 'loss': 0.14095593988895416}
+=============2=======================
+{'test_accuracy_NORMAL': 0.9713403582572937, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7889610528945923, 'f1_score': 0.8820326924324036, 'auc': 0.9856702089309692, 'loss': 0.08130212128162384}
+=============3=======================
+{'test_accuracy_NORMAL': 0.9810405373573303, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8496503233909607, 'f1_score': 0.9187145829200745, 'auc': 0.9905202388763428, 'loss': 0.0703987255692482}
+=============4=======================
+{'test_accuracy_NORMAL': 0.9378306865692139, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.6328125, 'f1_score': 0.7751196026802063, 'auc': 0.9689153432846069, 'loss': 0.1540922075510025}
+=============5=======================
+{'test_accuracy_NORMAL': 0.9735449552536011, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.801980197429657, 'f1_score': 0.8901098966598511, 'auc': 0.9867724776268005, 'loss': 0.08011932671070099}
+=============6=======================
+{'test_accuracy_NORMAL': 0.9823633432388306, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8586572408676147, 'f1_score': 0.9239543676376343, 'auc': 0.9911816716194153, 'loss': 0.05798529461026192}
+=============7=======================
+{'test_accuracy_NORMAL': 0.9559082984924316, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7084547877311707, 'f1_score': 0.829351544380188, 'auc': 0.9779541492462158, 'loss': 0.1243094727396965}
+=============8=======================
+{'test_accuracy_NORMAL': 0.9819223880767822, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8556337952613831, 'f1_score': 0.9222011566162109, 'auc': 0.9909611940383911, 'loss': 0.0595332570374012}
+=============9=======================
+{'test_accuracy_NORMAL': 0.9669312238693237, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7641509175300598, 'f1_score': 0.866310179233551, 'auc': 0.9834656119346619, 'loss': 0.10119886696338654}
+=============10=======================
+{'test_accuracy_NORMAL': 0.9828042387962341, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8617021441459656, 'f1_score': 0.9257143139839172, 'auc': 0.9914021492004395, 'loss': 0.04934409633278847}
+=============1=======================
+{'test_accuracy_NORMAL': 0.9378306865692139, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.6328125, 'f1_score': 0.7751196026802063, 'auc': 0.9689153432846069, 'loss': 0.14119312167167664}
+=============2=======================
+{'test_accuracy_NORMAL': 0.9669312238693237, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7641509175300598, 'f1_score': 0.866310179233551, 'auc': 0.9834656119346619, 'loss': 0.08614400029182434}
+=============3=======================
+{'test_accuracy_NORMAL': 0.9788359999656677, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8350515365600586, 'f1_score': 0.9101123809814453, 'auc': 0.9894180297851562, 'loss': 0.06898621469736099}
+=============4=======================
+{'test_accuracy_NORMAL': 0.9722222089767456, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7941176295280457, 'f1_score': 0.8852459192276001, 'auc': 0.9861111044883728, 'loss': 0.08945316076278687}
+=============5=======================
+{'test_accuracy_NORMAL': 0.9351851940155029, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.6230769157409668, 'f1_score': 0.7677724957466125, 'auc': 0.9675925970077515, 'loss': 0.1843963861465454}
+=============6=======================
+{'test_accuracy_NORMAL': 0.9678130745887756, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7689873576164246, 'f1_score': 0.8694096803665161, 'auc': 0.9839065670967102, 'loss': 0.09878504276275635}
+=============7=======================
+{'test_accuracy_NORMAL': 0.9629629850387573, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7431192398071289, 'f1_score': 0.8526315689086914, 'auc': 0.9814814925193787, 'loss': 0.09851431101560593}
+=============8=======================
+{'test_accuracy_NORMAL': 0.9722222089767456, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7941176295280457, 'f1_score': 0.8852459192276001, 'auc': 0.9861111044883728, 'loss': 0.0899236649274826}
+=============9=======================
+{'test_accuracy_NORMAL': 0.9563491940498352, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7105262875556946, 'f1_score': 0.8307692408561707, 'auc': 0.9781745672225952, 'loss': 0.140302374958992}
+=============10=======================
+{'test_accuracy_NORMAL': 0.972663164138794, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.796721339225769, 'f1_score': 0.8868613243103027, 'auc': 0.986331582069397, 'loss': 0.08671441674232483}
+=============1=======================
+{'test_accuracy_NORMAL': 0.9378306865692139, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.6328125, 'f1_score': 0.7751196026802063, 'auc': 0.9689153432846069, 'loss': 0.14095593988895416}
+=============2=======================
+{'test_accuracy_NORMAL': 0.9713403582572937, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7889610528945923, 'f1_score': 0.8820326924324036, 'auc': 0.9856702089309692, 'loss': 0.08130212128162384}
+=============3=======================
+{'test_accuracy_NORMAL': 0.9810405373573303, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.8496503233909607, 'f1_score': 0.9187145829200745, 'auc': 0.9905202388763428, 'loss': 0.07043636590242386}
+=============4=======================
+{'test_accuracy_NORMAL': 0.9303351044654846, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.6059850454330444, 'f1_score': 0.7546584010124207, 'auc': 0.9651675820350647, 'loss': 0.17585645616054535}
+=============5=======================
+{'test_accuracy_NORMAL': 0.962522029876709, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7408536672592163, 'f1_score': 0.8511383533477783, 'auc': 0.9812610149383545, 'loss': 0.08233512938022614}
+=============6=======================
+{'test_accuracy_NORMAL': 0.9669312238693237, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7641509175300598, 'f1_score': 0.866310179233551, 'auc': 0.9834656119346619, 'loss': 0.09388106316328049}
+=============7=======================
+{'test_accuracy_NORMAL': 0.9664903283119202, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7617554664611816, 'f1_score': 0.8647686839103699, 'auc': 0.9832451343536377, 'loss': 0.10451021045446396}
+=============8=======================
+{'test_accuracy_NORMAL': 0.962522029876709, 'test_precision_NORMAL': 1.0, 'test_accuracy_AMD': 1.0, 'test_precision_AMD': 0.7408536672592163, 'f1_score': 0.8511383533477783, 'auc': 0.9812610149383545, 'loss': 0.10483766347169876}

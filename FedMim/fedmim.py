@@ -34,6 +34,7 @@ class FedMim(BaseNet):
     def _calculate_loss(self, batch):
         imgs, labels = batch["img"], batch["label"]
         preds = self.forward(imgs)
-        loss = F.cross_entropy(preds, labels, weight=self.class_weights.to(self.device))
+        # loss = F.cross_entropy(preds, labels, weight=self.class_weights.to(self.device))
+        loss = F.cross_entropy(preds, labels)
         preds = preds.argmax(dim=-1) if len(self.classes) == 2 else preds
         return {"loss": loss, "preds": preds, "labels": labels}

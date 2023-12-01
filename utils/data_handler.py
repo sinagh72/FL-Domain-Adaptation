@@ -110,20 +110,20 @@ def get_datasets_classes():
     oct500_classes = [("NORMAL", 0),
                       ("AMD", 1),
                       ]
-    return srinivasan_classes, kermany_classes, oct500_classes
+    return kermany_classes, srinivasan_classes, oct500_classes
 
 
 def get_datasets_full_classes():
-    srinivasan_classes = [("NORMAL", 0),
-                          ("AMD", 1),
-                          ("DME", 2),
-                          ]
-
     kermany_classes = [("NORMAL", 0),
                        ("AMD", 1),
                        ("DME", 2),
                        ("CNV", 3),
                        ]
+
+    srinivasan_classes = [("NORMAL", 0),
+                          ("AMD", 1),
+                          ("DME", 2),
+                          ]
 
     oct500_classes = [("NORMAL", 0),
                       ("AMD", 1),
